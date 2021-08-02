@@ -146,8 +146,6 @@ void loadModules() {
 		"data/global.lua");
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/stages.lua") == 0),
 		"data/stages.lua");
-	modulesLoadHelper((g_luaEnvironment.loadFile("data/startup/startup.lua") == 0),
-		"data/startup/startup.lua");
 
 	modulesLoadHelper(g_scripts->loadScripts("scripts/lib", true, false),
 		"data/scripts/libs");
