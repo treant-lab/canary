@@ -28,7 +28,7 @@
 #include "game/movement/position.h"
 #include "items/tile.h"
 
-using ConditionList = std::list<Condition*>;
+using conditionVector = std::vector<Condition*>;
 using CreatureEventList = std::list<CreatureEvent*>;
 
 class Map;
@@ -507,7 +507,7 @@ class Creature : virtual public Thing
 
 		std::list<Creature*> summons;
 		CreatureEventList eventsList;
-		ConditionList conditions;
+		conditionVector conditions;
 
 		std::forward_list<Direction> listWalkDir;
 

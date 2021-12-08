@@ -60,7 +60,7 @@ class TargetCallback final : public CallBack
 };
 
 struct CombatParams {
-	std::forward_list<std::unique_ptr<const Condition>> conditionList;
+	std::vector<std::unique_ptr<const Condition>> conditionVector;
 
 	std::unique_ptr<ValueCallback> valueCallback;
 	std::unique_ptr<TileCallback> tileCallback;
@@ -278,7 +278,7 @@ class Combat
 			return area != nullptr;
 		}
 		void addCondition(const Condition* condition) {
-			params.conditionList.emplace_front(condition);
+			params.conditionVector.emplace_back(condition);
 		}
 		void setPlayerCombatValues(formulaType_t formulaType, double mina, double minb, double maxa, double maxb);
 		void postCombatEffects(Creature* caster, const Position& pos) const {

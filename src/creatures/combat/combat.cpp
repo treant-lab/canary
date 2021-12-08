@@ -544,7 +544,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 		return;
 	}
 
-	for (const auto& condition : params.conditionList) {
+	for (const auto& condition : params.conditionVector) {
 		//Cleanse charm rune (target as player)
 		Player* player = target->getPlayer();
 		if (player) {
