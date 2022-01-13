@@ -7779,6 +7779,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
+			delete sellerPlayer;
 			player->onReceiveMail();
 		}
 	}
