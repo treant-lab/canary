@@ -7707,8 +7707,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			sellerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId))
 			{
-				delete sellerPlayer;
-				return;
+				return delete sellerPlayer;
 			}
 		}
 
@@ -7723,7 +7722,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (totalPrice > (player->getBankBalance() + player->getMoney())) {
 			if (sellerPlayer->isOffline()) {
-				delete sellerPlayer;
+				return delete sellerPlayer;
 			}
 			return;
 		}
