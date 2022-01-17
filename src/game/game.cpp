@@ -7782,6 +7782,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			delete sellerPlayer;
 			player->onReceiveMail();
 		}
+		if (sellerPlayer->isOffline()) {
+			IOLoginData::savePlayer(sellerPlayer);
+			delete sellerPlayer;
+		}
 	}
 
 	const int32_t marketOfferDuration = g_config.getNumber(MARKET_OFFER_DURATION);
