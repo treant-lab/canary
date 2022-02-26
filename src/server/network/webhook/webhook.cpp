@@ -111,8 +111,13 @@ static std::string get_payload(std::string title, std::string message, int color
 
 // Can't labmda this for some reason
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *userdata) {
-	(*static_cast<std::string *>(userdata)).append(static_cast<char *>(ptr), size * nmemb);
-	return size * nmemb;
+	if (CURLE_OK) {
+		(*static_cast<std::string *>(userdata)).append(static_cast<char *>(ptr), size * nmemb);
+		return size * nmemb;
+	} else {
+		SPDLOG_ERROR("Discord connection failed");
+		return -1;
+	}
 }
 
 static int webhook_send_message_(const char *url, const char *payload, std::string *response_body) {
