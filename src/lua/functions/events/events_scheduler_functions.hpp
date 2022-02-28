@@ -27,7 +27,7 @@
 
 extern LuaEnvironment g_luaEnvironment;
 
-class EventsSchedulerFunctions final : LuaScriptInterface {
+class EventsSchedulerFunctions final : private LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
 			registerTable(L, "EventsScheduler");

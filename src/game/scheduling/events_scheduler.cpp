@@ -38,7 +38,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 		int16_t daysNow;
 		time_t t = time(nullptr);
 		const tm* timePtr = localtime(&t);
-		int16_t daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+		int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
 
 	for (auto schedNode : doc.child("events").children()) {
 		std::string ss_d;
