@@ -31,7 +31,7 @@
 extern Monsters g_monsters;
 extern Game g_game;
 extern Events* g_events;
-extern EventsScheduler g_eventsScheduler;
+const EventsScheduler g_eventsScheduler;
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day

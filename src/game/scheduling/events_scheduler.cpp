@@ -37,7 +37,7 @@ bool EventsScheduler::loadScheduleEventFromXml()
 	}
 
 		int16_t daysNow;
-		time_t t = time(NULL);
+		time_t t = time(nullptr);
 		tm* timePtr = localtime(&t);
 		int16_t daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
 
@@ -77,37 +77,35 @@ bool EventsScheduler::loadScheduleEventFromXml()
 			}
 		}
 
-		if ((attr = schedNode.attribute("script"))) {
-			if (!(g_scripts->loadEventSchedulerScripts(attr.as_string()))) {
+		if ((attr = schedNode.attribute("script")) && (!(g_scripts->loadEventSchedulerScripts(attr.as_string())))) {
 				SPDLOG_WARN("Can not load the file '{}' on '/events/scripts/scheduler/'",
 					attr.as_string());
 				return false;
-			}
 		}
 
 		for (auto schedENode : schedNode.children()) {
 			if ((schedENode.attribute("exprate"))) {
 				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
 				g_eventsScheduler.setExpSchedule(exprate);
-				ss << " exp: " << (exprate) << "%";
+				ss << " exp: " << exprate << "%";
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
 				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
 				g_eventsScheduler.setLootSchedule(lootrate);
-				ss << ", loot: " << (lootrate) << "%";
+				ss << ", loot: " << lootrate << "%";
 			}
 
 			if ((schedENode.attribute("spawnrate"))) {
 				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
 				g_eventsScheduler.setSpawnMonsterSchedule(spawnrate);
-				ss << ", spawn: "  << (spawnrate) << "%";
+				ss << ", spawn: "  << spawnrate << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
 				uint16_t skillrate = pugi::cast<uint16_t>(schedENode.attribute("skillrate").value());
 				g_eventsScheduler.setSkillSchedule(skillrate);
-				ss << ", skill: " << (skillrate) << "%";
+				ss << ", skill: " << skillrate << "%";
 				break;
 			}
 		}
