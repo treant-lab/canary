@@ -28,7 +28,7 @@ class EventsScheduler
 {
 	public:
         // Event schedule xml load
-		bool loadScheduleEventFromXml();
+		bool loadScheduleEventFromXml() const;
         
         // Event schedule
 		uint16_t getExpSchedule() const {

@@ -27,18 +27,17 @@
 extern Scripts* g_scripts;
 extern EventsScheduler g_eventsScheduler;
 
-bool EventsScheduler::loadScheduleEventFromXml()
+bool EventsScheduler::loadScheduleEventFromXml() const
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/events.xml");
-	if (!result) {
+	if (pugi::xml_parse_result result = doc.load_file("data/XML/events.xml"); !result) {
 		printXMLError("Error - Game::loadScheduleEventFromXml", "data/XML/events.xml", result);
 		return false;
 	}
 
 		int16_t daysNow;
 		time_t t = time(nullptr);
-		tm* timePtr = localtime(&t);
+		const tm* timePtr = localtime(&t);
 		int16_t daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
 
 	for (auto schedNode : doc.child("events").children()) {
@@ -51,15 +50,15 @@ bool EventsScheduler::loadScheduleEventFromXml()
 			ss << "> " << ss_d << " event";
 		}
 
-		int year;
-		int day;
-		int month;
+		int16_t year;
+		int16_t day;
+		int16_t month;
 
 		if (!(attr = schedNode.attribute("enddate"))) {
 			continue;
 		} else {
 			ss_d = attr.as_string();
-			sscanf(ss_d.c_str(), "%d/%d/%d", &month, &day, &year);
+			sscanf(ss_d.c_str(), "%hd/%hd/%hd", &month, &day, &year);
 			daysNow = ((year * 365) + (month * 30) + day);
 			if (daysMath > daysNow) {
 				continue;
@@ -70,7 +69,7 @@ bool EventsScheduler::loadScheduleEventFromXml()
 			continue;
 		} else {
 			ss_d = attr.as_string();
-			sscanf(ss_d.c_str(), "%d/%d/%d", &month, &day, &year);
+			sscanf(ss_d.c_str(), "%hd/%hd/%hd", &month, &day, &year);
 			daysNow = ((year * 365) + (month * 30) + day);
 			if (daysMath < daysNow) {
 				continue;
