@@ -257,6 +257,33 @@ local function useStamina(player)
 	player:setStamina(staminaMinutes)
 end
 
+local function useStaminaXp(player)
+	local staminaMinutes = player:getExpBoostStamina() / 60
+	if staminaMinutes == 0 then
+		return
+	end
+
+	local playerId = player:getId()
+	local currentTime = os.time()
+	local timePassed = currentTime - nextUseXpStamina[playerId]
+	if timePassed <= 0 then
+		return
+	end
+
+	if timePassed > 60 then
+		if staminaMinutes > 2 then
+			staminaMinutes = staminaMinutes - 2
+		else
+			staminaMinutes = 0
+		end
+		nextUseXpStamina[playerId] = currentTime + 120
+	else
+		staminaMinutes = staminaMinutes - 1
+		nextUseXpStamina[playerId] = currentTime + 60
+	end
+	player:setExpBoostStamina(staminaMinutes * 60)
+end
+
 function Player:onGainExperience(source, exp, rawExp)
 	if not source or source:isPlayer() then
 		return exp
@@ -265,28 +292,58 @@ function Player:onGainExperience(source, exp, rawExp)
 	-- Soul regeneration
 	local vocation = self:getVocation()
 	if self:getSoul() < vocation:getMaxSoul() and exp >= self:getLevel() then
-		soulCondition:setParameter(CONDITION_PARAM_SOULTICKS, vocation:getSoulGainTicks())
+		soulCondition:setParameter(CONDITION_PARAM_SOULTICKS, vocation:getSoulGainTicks() * 1000)
 		self:addCondition(soulCondition)
 	end
 
 	-- Experience Stage Multiplier
 	local expStage = getRateFromTable(experienceStages, self:getLevel(), configManager.getNumber(configKeys.RATE_EXP))
-	exp = exp * expStage
-	baseExp = rawExp * expStage
 
-	-- Stamina modifier
-	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
-		useStamina(self)
-
-		local staminaMinutes = self:getStamina()
-		if staminaMinutes > 2400 and self:isPremium() then
-			exp = exp * 1.5
-		elseif staminaMinutes <= 840 then
-			exp = exp * 0.5
+	-- Prey Bonus
+	local preyBonus = 0
+	for slot = CONST_PREY_SLOT_FIRST, CONST_PREY_SLOT_THIRD do
+		if (self:getPreyCurrentMonster(slot) == source:getName()
+		and self:getPreyBonusType(slot) == CONST_BONUS_XP_BONUS) then
+			preyBonus = self:getPreyBonusValue(slot)
+		end
+		if (self:getPreyTimeLeft(slot) / 60) > 0 then
+			preyTimeLeft(self, slot) -- slot consumption, outside of the mosnter check
 		end
 	end
 
-	return exp
+	-- Store Bonus
+	useStaminaXp(self) -- Use store boost stamina
+
+	local Boost = self:getExpBoostStamina()
+	local stillHasBoost = Boost > 0
+	local storeXpBoostAmount = stillHasBoost and self:getStoreXpBoost() or 0
+
+	self:setStoreXpBoost(storeXpBoostAmount)
+
+	-- Stamina Bonus
+	local staminaBoost = 1
+	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
+		useStamina(self)
+		local staminaMinutes = self:getStamina()
+			if staminaMinutes > 2340 and self:isPremium() then
+				staminaBoost = 1.5
+			elseif staminaMinutes <= 840 then
+				staminaBoost = 0.5 --TODO destroy loot of people with 840- stamina
+			end
+		self:setStaminaXpBoost(staminaBoost * 100)
+	end
+
+	-- Boosted creature
+	if source:getName():lower() == (Game.getBoostedCreature()):lower() then
+		exp = exp * 2
+	end
+
+	-- Event scheduler
+	if SCHEDULE_EXP_RATE ~= 100 then
+		expStage = math.max(0, (expStage * SCHEDULE_EXP_RATE)/100)
+	end
+
+	return (exp / 100 * ((expStage * 100 + storeXpBoostAmount + preyBonus) * staminaBoost))
 end
 
 function Player:onLoseExperience(exp)
@@ -298,10 +355,24 @@ function Player:onGainSkillTries(skill, tries)
 		return tries
 	end
 
-	if skill == SKILL_MAGLEVEL then
-		return tries * configManager.getNumber(configKeys.RATE_MAGIC)
+	-- Event scheduler skill rate
+	local STAGES_DEFAULT = skillsStages or nil
+	local SKILL_DEFAULT = self:getSkillLevel(skill)
+	local RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
+
+	if(skill == SKILL_MAGLEVEL) then -- Magic Level
+		STAGES_DEFAULT = magicLevelStages or nil
+		SKILL_DEFAULT = self:getBaseMagicLevel()
+		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 	end
-	return tries * configManager.getNumber(configKeys.RATE_SKILL)
+
+	skillOrMagicRate = getRateFromTable(STAGES_DEFAULT, SKILL_DEFAULT, RATE_DEFAULT)
+
+	if SCHEDULE_SKILL_RATE ~= 100 then
+		skillOrMagicRate = math.max(0, (skillOrMagicRate * SCHEDULE_SKILL_RATE) / 100)
+	end
+
+	return tries / 100 * (skillOrMagicRate * 100)
 end
 
 function Player:onChangeZone(zone)

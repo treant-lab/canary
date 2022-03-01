@@ -38,10 +38,10 @@ class EventsScheduler
 			expSchedule = (expSchedule * exprate)/100;
 		}
 
-		uint16_t getLootSchedule() const {
+		uint32_t getLootSchedule() const {
 			return lootSchedule;
 		}
-		void setLootSchedule(uint16_t lootrate) {
+		void setLootSchedule(uint32_t lootrate) {
 			lootSchedule = (lootSchedule * lootrate)/100;
 		}
 
@@ -62,7 +62,7 @@ class EventsScheduler
     private:
         // Event schedule
 		uint16_t expSchedule = 100;
-		uint16_t lootSchedule = 100;
+		uint32_t lootSchedule = 100;
 		uint16_t skillSchedule = 100;
 		uint32_t spawnMonsterSchedule = 100;
 

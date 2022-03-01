@@ -35,7 +35,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 		return false;
 	}
 
-		int16_t daysNow;
+		int daysNow;
 		time_t t = time(nullptr);
 		const tm* timePtr = localtime(&t);
 		int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
@@ -47,7 +47,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 		pugi::xml_attribute attr;
 		if ((attr = schedNode.attribute("name"))) {
 			ss_d = attr.as_string();
-			ss << "> " << ss_d << " event";
+			ss << ss_d << " event";
 		}
 
 		int16_t year;
@@ -90,7 +90,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
-				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
+				uint32_t lootrate = pugi::cast<uint32_t>(schedENode.attribute("lootrate").value());
 				g_eventsScheduler.setLootSchedule(lootrate);
 				ss << ", loot: " << lootrate << "%";
 			}
