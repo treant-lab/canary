@@ -5,6 +5,7 @@ local config = {
 }
 
 local advanceSave = CreatureEvent("AdvanceSave")
+
 function advanceSave.onAdvance(player, skill, oldLevel, newLevel)
 	if skill ~= SKILL_LEVEL or newLevel <= oldLevel then
 		return true
@@ -29,7 +30,6 @@ function advanceSave.onAdvance(player, skill, oldLevel, newLevel)
 		if SCHEDULE_EXP_RATE ~= 100 then
 			baseRate = math.max(0, (baseRate * SCHEDULE_EXP_RATE)/100)
 		end
-
 		player:setBaseXpGain(baseRate * 100)
 	end
 
