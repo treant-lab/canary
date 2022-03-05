@@ -31,14 +31,15 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 {
 	pugi::xml_document doc;
 	if (pugi::xml_parse_result result = doc.load_file("data/XML/events.xml"); !result) {
-		printXMLError("Error - Game::loadScheduleEventFromXml", "data/XML/events.xml", result);
+		printXMLError("Error - EventsScheduler::loadScheduleEventFromXml", "data/XML/events.xml", result);
+		consoleHandlerExit();
 		return false;
 	}
 
-		int daysNow;
-		time_t t = time(nullptr);
-		const tm* timePtr = localtime(&t);
-		int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+	int daysNow;
+	time_t t = time(nullptr);
+	const tm* timePtr = localtime(&t);
+	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
 
 	for (auto schedNode : doc.child("events").children()) {
 		std::string ss_d;
@@ -78,7 +79,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 
 		if ((attr = schedNode.attribute("script")) && (!(g_scripts->loadEventSchedulerScripts(attr.as_string())))) {
 				SPDLOG_WARN("Can not load the file '{}' on '/events/scripts/scheduler/'",
-					attr.as_string());
+				attr.as_string());
 				return false;
 		}
 
@@ -108,7 +109,6 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 				break;
 			}
 		}
-		SPDLOG_INFO(ss.str());
 	}
 	return true;
 }

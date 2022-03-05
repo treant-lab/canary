@@ -70,6 +70,10 @@ function startup.onStartup()
 		if spawnRate ~= 100 then
 			SCHEDULE_SPAWN_RATE = spawnRate
 		end
+
+		if expRate ~= 100 or lootRate ~= 100 or spawnRate ~= 100 or skillRate ~= 100 then
+		Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: ".. skillRate .."%")
+		end
 	end
 
     -- Client XP Display Mode
