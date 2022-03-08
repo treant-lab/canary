@@ -292,8 +292,8 @@ local function useStaminaXpBoost(player)
 	player:setExpBoostStamina(staminaMinutes * 60)
 end
 
-function Player:onGainExperience(source, exp, rawExp)
-	if not source or source:isPlayer() then
+function Player:onGainExperience(target, exp, rawExp)
+	if not target or target:isPlayer() then
 		return exp
 	end
 
@@ -310,7 +310,7 @@ function Player:onGainExperience(source, exp, rawExp)
 	-- Prey Bonus
 	local preyBonus = 0
 	for slot = CONST_PREY_SLOT_FIRST, CONST_PREY_SLOT_THIRD do
-		if (self:getPreyCurrentMonster(slot) == source:getName()
+		if (self:getPreyCurrentMonster(slot) == target:getName()
 		and self:getPreyBonusType(slot) == CONST_BONUS_XP_BONUS) then
 			preyBonus = self:getPreyBonusValue(slot)
 		end
@@ -342,7 +342,7 @@ function Player:onGainExperience(source, exp, rawExp)
 	end
 
 	-- Boosted creature
-	if source:getName():lower() == (Game.getBoostedCreature()):lower() then
+	if target:getName():lower() == (Game.getBoostedCreature()):lower() then
 		exp = exp * 2
 	end
 
