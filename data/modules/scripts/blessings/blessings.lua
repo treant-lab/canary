@@ -150,7 +150,7 @@ Blessings.sendBlessDialog = function(player)
 
 	local playerAmulet = player:getSlotItem(CONST_SLOT_NECKLACE)
 	local haveSkull = player:getSkull() >= 4
-	hasAol = (playerAmulet and playerAmulet:getId() == ITEM_AMULETOFLOSS)
+	hasAol = (playerAmulet and playerAmulet:getClientId() == ITEM_AMULETOFLOSS)
 
 	equipLoss = Blessings.LossPercent[#curBless].item
 	if haveSkull then
@@ -336,8 +336,8 @@ end
 
 Blessings.PlayerDeath = function(player, corpse, killer)
 	local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or false
-	local hasAol = (player:getSlotItem(CONST_SLOT_NECKLACE) and player:getSlotItem(CONST_SLOT_NECKLACE):getId() == ITEM_AMULETOFLOSS)
-	local haveSkull = table.contains({SKULL_RED, SKULL_BLACK}, player:getSkull())
+	local hasAol = (player:getSlotItem(CONST_SLOT_NECKLACE) and player:getSlotItem(CONST_SLOT_NECKLACE):getClientId() == ITEM_AMULETOFLOSS)
+	local haveSkull = isInArray({SKULL_RED, SKULL_BLACK}, player:getSkull())
 	local curBless = player:getBlessings()
 
 	if haveSkull then  -- lose all bless + drop all items
