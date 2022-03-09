@@ -2278,8 +2278,10 @@ double_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount)
 	if (nextLevelCount == 0) {
 		return 0;
 	}
-
-  double_t result = round( ((count * 100.) / nextLevelCount) * 100.) / 100.;
+	SPDLOG_INFO("{} count", count);
+	SPDLOG_INFO("{} nextLevelCount", nextLevelCount);
+  	double_t result = round(((count * 1.) / (nextLevelCount * 1.)) * 100.0);
+	SPDLOG_INFO("{} result", result);
 	if (result > 100) {
 		return 0;
 	}

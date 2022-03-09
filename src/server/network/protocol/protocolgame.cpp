@@ -6307,7 +6307,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	}
 
 	msg.add<uint16_t>(player->getBaseMagicLevel());
-	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
+	msg.add<uint16_t>(player->getMagicLevelPercent());
 
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i)
 	{
@@ -6319,7 +6319,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 			msg.add<uint16_t>(player->getBaseSkill(i));
 		}
 
-		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
+		msg.add<uint16_t>(player->getSkillPercent(i));
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i)
